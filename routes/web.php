@@ -23,6 +23,13 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 Route::prefix('items')->group(function () {
     Route::get('/', [App\Http\Controllers\ItemController::class, 'index']);
+
     Route::get('/add', [App\Http\Controllers\ItemController::class, 'add']);
     Route::post('/add', [App\Http\Controllers\ItemController::class, 'add']);
+
+    Route::get('/add_multi', [App\Http\Controllers\ItemController::class, 'add_multi']);
+    Route::post('/add_multi', [App\Http\Controllers\ItemController::class, 'add_multi']);
+
+    Route::get('/edit/{id}', [App\Http\Controllers\ItemController::class, 'edit']);
+    Route::post('/edit/{id}', [App\Http\Controllers\ItemController::class, 'edit']);
 });
