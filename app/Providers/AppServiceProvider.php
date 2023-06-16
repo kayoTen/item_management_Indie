@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // 767 bytes error
+        \Illuminate\Support\Facades\Schema::defaultStringLength(191);
     }
 }
