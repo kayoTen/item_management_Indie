@@ -23,12 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // https
+        if (\App::environment(['production'])) {
+            \URL::forceScheme('https');
+        }
+
         // 767 bytes error
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);
-
-        // https
-        if (\APP::environment(['production'])) {
-            \URL::forceSchema('https');
-        }
     }
 }
