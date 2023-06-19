@@ -23,10 +23,10 @@
             <form method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
+                    <label for="file">CSVファイル</label>
                     <div class="form-group">
-                        <label for="file">CSVファイル</label>
                         <input type="file" class="form-control" id="csvFile" name="csvFile" accept=".csv">
-                        <label for="file"><a href="">sample.csv</a></label>
+                        <a href="{{ url('/data/sample.csv') }}" download>sample.csv</a>
                     </div>
                 </div>
 
