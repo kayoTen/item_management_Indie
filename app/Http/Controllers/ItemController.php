@@ -112,12 +112,12 @@ class ItemController extends Controller
 
             // データベースに登録する
             foreach ($items as $item) {
-                // $this->validate($item, [
-                //     "user_id" => 'required|numeric',
-                //     "name" => 'required|max:100',
-                //     "type" => 'required|numeric',
-                //     "detail" => 'required|max:255',
-                // ]);
+                // 不正なデータは登録しない
+                if (!is_numeric($item["user_id"])) break;
+                if (!(mb_strlen($item["name"]) <= 100)) break;
+                if (!is_numeric($item["type"])) break;
+                if (!(mb_strlen($item["detail"]) <= 255)) break;
+
                 Item::create([
                     'user_id' => (int)$item["user_id"],
                     'name' => $item["name"],
@@ -187,7 +187,7 @@ class ItemController extends Controller
     function chkInjustice($uploadedData, $header)
     {
         // 連想配列のコレクションを作成
-        //combine 一方の配列をキー、もう一方を値として一つの配列生成。haederをキーとして、一つ一つの$oneRecordと組み合わせて、連想配列のコレクション作成
+        // combine 一方の配列をキー、もう一方を値として一つの配列生成。haederをキーとして、一つ一つの$oneRecordと組み合わせて、連想配列のコレクション作成
         try {
             $items = $uploadedData->map(fn ($oneRecord) => $header->combine(collect(explode(",", $oneRecord))));
         } catch (Exception $e) {
