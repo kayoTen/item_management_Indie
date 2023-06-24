@@ -229,7 +229,7 @@ class ItemController extends Controller
                     ]
                 );
                 if ($validator->fails()) {
-                    return redirect('/edit' . $request->id)
+                    return redirect('/items/edit/' . $request->id)
                         ->withErrors($validator)
                         ->withInput();
                 } else {
@@ -259,7 +259,7 @@ class ItemController extends Controller
                     ]
                 );
                 if ($validator->fails()) {
-                    return redirect('/item_edit/' . $request->id)
+                    return redirect('/items/edit/' . $request->id)
                         ->withErrors($validator)
                         ->withInput();
                 } else {
