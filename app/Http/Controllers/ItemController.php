@@ -110,20 +110,39 @@ class ItemController extends Controller
             // 不正なデータがないかを確認
             $items = $this->chkInjustice($uploadedData, $header);
 
-            // データベースに登録する
+            // 不正なデータは登録しない
+            $flg = true;
             foreach ($items as $item) {
-                // 不正なデータは登録しない
-                if (!is_numeric($item["user_id"])) break;
-                if (!(mb_strlen($item["name"]) <= 100)) break;
-                if (!is_numeric($item["type"])) break;
-                if (!(mb_strlen($item["detail"]) <= 255)) break;
-
-                Item::create([
-                    'user_id' => (int)$item["user_id"],
-                    'name' => $item["name"],
-                    'type' => (int)$item["type"],
-                    'detail' => $item["detail"],
-                ]);
+                if (!is_numeric($item["user_id"])) {
+                    $flg = false;
+                    break;
+                }
+                if (!(mb_strlen($item["name"]) <= 100)) {
+                    $flg = false;
+                    break;
+                }
+                if (!is_numeric($item["type"])) {
+                    $flg = false;
+                    break;
+                }
+                if (!(mb_strlen($item["detail"]) <= 255)) {
+                    $flg = false;
+                    break;
+                }
+            }
+            // データベースに登録する
+            if ($flg) {
+                foreach ($items as $item) {
+                    Item::create([
+                        'user_id' => (int)$item["user_id"],
+                        'name' => $item["name"],
+                        'type' => (int)$item["type"],
+                        'detail' => $item["detail"],
+                    ]);
+                }
+            } else {
+                print_r("CSVに不正なデータが存在します");
+                exit;
             }
 
             return redirect('/items');
@@ -143,20 +162,34 @@ class ItemController extends Controller
         if ($request->hasFile('csvFile')) {
             //拡張子がCSVであるかの確認
             if ($request->csvFile->getClientOriginalExtension() !== "csv") {
-                throw new Exception('不適切な拡張子です。');
+                print_r('不適切な拡張子です。');
+                exit;
             }
             //ファイルの保存
             $newCsvFileName = $request->csvFile->getClientOriginalName();
             $request->csvFile->storeAs('public/csv', $newCsvFileName);
         } else {
-            throw new Exception('CSVファイルの取得に失敗しました。');
+            print_r('CSVファイルの取得に失敗しました。');
+            exit;
         }
         //保存したCSVファイルの取得
         $csv = Storage::disk('local')->get("public/csv/{$newCsvFileName}");
         // OS間やファイルで違う改行コードをexplode統一
         $csv = str_replace(array("\r\n", "\r"), "\n", $csv);
+        // CSVファイルの空行を削除する
+        $csv = trim($csv);
+        $csv = preg_replace("/(\r?\n)+/", "\n", $csv);
+
         // $csvを元に行単位のコレクション作成。explodeで改行ごとに分解
         $uploadedData = collect(explode("\n", $csv));
+
+        foreach ($uploadedData as $val) {
+            $split = preg_split("/[,-]/", $val);
+            if (count($split) !== 4) {
+                print_r('１レコードの個数を確認してください');
+                exit;
+            }
+        }
 
         return $uploadedData;
     }
@@ -173,7 +206,8 @@ class ItemController extends Controller
         $header = collect($item->csvHeader());
         $uploadedHeader = collect(explode(",", $uploadedData->shift()));
         if ($header->count() !== $uploadedHeader->count()) {
-            throw new Exception('Error:ヘッダーが一致しません');
+            print_r('Error:ヘッダーが一致しません');
+            exit;
         } else {
             return $header;
         }
@@ -191,7 +225,8 @@ class ItemController extends Controller
         try {
             $items = $uploadedData->map(fn ($oneRecord) => $header->combine(collect(explode(",", $oneRecord))));
         } catch (Exception $e) {
-            throw new Exception('Error:ヘッダーが一致しません');
+            print_r('Error:ヘッダーが一致しません');
+            exit;
         }
 
         return $items;
