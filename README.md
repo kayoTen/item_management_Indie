@@ -1,36 +1,26 @@
-## 商品管理システム
+# 商品管理システム
 
-### 環境構築手順
+## 概要
+商品の登録・編集・削除を行うアプリケーションです。
 
-* Gitクローン
-* .env.example をコピーして .env を作成
-* MySQLかPostgreSQLのデータベース作成（名前：item_management）  
-  ローカルでMAMPを使用しているのであれば、MySQL推奨
-* .env にデータベース接続情報追加
-```
-例）
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=item_management
-DB_USERNAME=root
-DB_PASSWORD=root
-```
-* APP_KEY生成
-```
-$ php artisan key:generate
-```
-* Composerインストール
-```
-$ composer install
-```
-* フロント環境構築
-```
-$ npm install
-$ npm run dev
-```
-* マイグレーション
-```
-$ php artisan migrate
-```
-# item_management_Indie
+## 主な機能
+- 商品一覧表示
+- 商品登録機能
+- 商品一括登録機能
+- 商品編集機能
+- 商品削除機能
+
+## 開発環境
+- PHP 8.1.12
+- Laravel 8.83.3
+- MySQL
+
+## 設計書
+[設計書ページ](https://github.com/kayoTen/item_management_Indie/)
+
+## システム閲覧
+[アプリケーションページへ](https://item-management-indie-c1c2d5bb2c62.herokuapp.com/login)
+
+## テスト用アカウント
+- メールアドレス：new1@example.com
+- パスワード：12345678
